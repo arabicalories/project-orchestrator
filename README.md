@@ -112,8 +112,9 @@ If you want the fastest orientation path, read these first:
 1. `docs/project-orchestrator-implementation-status-v0.1.md`
 2. `docs/project-orchestrator-github-packaging-plan-v0.1.md`
 3. `docs/project-orchestrator-update-workflow-sop-v0.1.md`
-4. `project-orchestrator/component-manifest.json`
-5. `project-orchestrator/projects/pa-sample/project.json`
+4. `docs/project-orchestrator-public-ready-gap-review-v0.1.md`
+5. `project-orchestrator/component-manifest.json`
+6. `project-orchestrator/projects/pa-sample/project.json`
 
 ## Pre-push release check
 
