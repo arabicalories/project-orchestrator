@@ -1,30 +1,129 @@
 # Project Orchestrator (Private Preview)
 
-This repository contains the private-preview packaging baseline for the Project Orchestrator prototype.
+This repository is the private-preview packaging baseline for the Project Orchestrator prototype.
 
-It is intended for iterative internal development, not for public release or turnkey installation yet.
+It is not a turnkey product yet. Think of it as a curated mirror of the prototype that is actively developed in a separate workspace, then trimmed and synced here for internal sharing, review, and gradual hardening.
 
-## Current scope
-- project orchestrator core specs, shared policy, templates, and samples
-- runtime-oriented scripts used by the prototype
-- `pa-sample` as the default example instance
-- docs describing current implementation status, packaging plan, and update workflow
+## What this repo is
 
-## Not included
-- local-private real project instances
-- local runtime state
-- review card outputs, logs, caches, tmp files, or workspace-private memory
-- real registry entries and real environment configuration
+This repo is the clean publishing surface for the current prototype. It keeps the parts that are useful to review, discuss, and iterate on:
+
+- core task/stage specs
+- shared policy and workspace templates
+- sample project instance (`pa-sample`)
+- runtime-oriented prototype scripts
+- packaging, implementation, and update workflow docs
+
+## What this repo is not
+
+This repo intentionally does **not** include local-private real project instances or runtime state. In particular, it excludes:
+
+- real project configs and real registry entries
+- local runtime state, logs, caches, tmp files
+- review card outputs and workspace-private memory
+- real environment configuration, secrets, and local machine paths
+- local-private instance customizations used in day-to-day production work
+
+## Repository layout
+
+```text
+.
+├── README.md
+├── docs/
+│   ├── project-orchestrator-implementation-status-v0.1.md
+│   ├── project-orchestrator-github-packaging-plan-v0.1.md
+│   └── project-orchestrator-update-workflow-sop-v0.1.md
+├── project-orchestrator/
+│   ├── component-manifest.json
+│   ├── projects/pa-sample/
+│   ├── registry/projects.sample.json
+│   ├── samples/
+│   ├── shared-skills/
+│   ├── specs/
+│   ├── state-template/
+│   └── workspace-template/
+├── scripts/
+└── tests/
+```
 
 ## Current status
-This repository is a curated mirror of the actively developed workspace version.
 
-Default workflow:
-- develop and verify in the workspace
-- curate in staging
-- sync only the reviewed, trimmed result into this repository
+Current maturity: **private preview / internal beta**.
 
-See also:
-- `docs/project-orchestrator-implementation-status-v0.1.md`
-- `docs/project-orchestrator-github-packaging-plan-v0.1.md`
-- `docs/project-orchestrator-update-workflow-sop-v0.1.md`
+What is already here:
+
+- a usable packaging skeleton
+- sample config and sample instance shape
+- stage transition specs and artifact rules
+- prototype runtime scripts
+- unit tests for the current prototype behavior
+
+What is still intentionally unfinished:
+
+- public installation experience
+- stable external interfaces
+- production-grade docs for third-party adopters
+- fully generalized runtime adapters
+- long-term compatibility guarantees
+
+## How this repo is maintained
+
+The current workflow is:
+
+1. develop and validate in the workspace
+2. curate changes in a staging directory
+3. sync only the reviewed, trimmed result into this repository
+
+In other words:
+
+- **workspace** = real development source
+- **staging** = packaging/filtering area
+- **this repo** = reviewed mirror for sharing and iteration
+
+This keeps local-private operational details out of the repository while still allowing the prototype to evolve quickly.
+
+## Sample vs local-private instances
+
+`pa-sample` is the example truth source in this repository.
+
+Real local-private instances stay outside this repo. They may share the same structure, but they can contain:
+
+- real message targets
+- real runtime paths
+- real environment bindings
+- project-specific operational conventions
+
+Those do not belong in the packaged preview repository.
+
+## Working expectation
+
+If you are reading this repo as a collaborator, the right expectation is:
+
+- review the structure
+- understand the current task/state model
+- inspect the sample instance
+- use the docs to follow packaging decisions
+- do not assume this is a drop-in installable product yet
+
+## Recommended reading order
+
+If you want the fastest orientation path, read these first:
+
+1. `docs/project-orchestrator-implementation-status-v0.1.md`
+2. `docs/project-orchestrator-github-packaging-plan-v0.1.md`
+3. `docs/project-orchestrator-update-workflow-sop-v0.1.md`
+4. `project-orchestrator/component-manifest.json`
+5. `project-orchestrator/projects/pa-sample/project.json`
+
+## Notes for future packaging
+
+This repository is expected to keep changing. The current goal is not “final public release”, but a clean enough private beta surface that can be updated repeatedly without dragging local-private coupling back in.
+
+That means the packaging standard right now is:
+
+- clean boundaries
+- no real environment leakage
+- sample-first examples
+- docs that match actual behavior closely enough to avoid confusion
+
+When the prototype stabilizes further, this repo can be tightened again toward a more public-facing distribution shape.
