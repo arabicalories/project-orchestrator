@@ -12,6 +12,7 @@
 4. `docs/project-orchestrator-github-packaging-plan-v0.1.md`
 5. `docs/project-orchestrator-update-workflow-sop-v0.1.md`
 6. `docs/project-orchestrator-public-ready-gap-review-v0.1.md`
+7. `docs/project-orchestrator-milestone-summary-v0.1.md`
 
 ## 文档地图
 
@@ -40,7 +41,12 @@
 - 适合：想知道“离 future public template 还差什么”的人
 - 作用：按 `P0 / P1 / P2` 给出当前差距与最小修复方向
 
-### 6. Frozen baseline / deep design reference
+### 6. Milestone summary
+- `docs/project-orchestrator-milestone-summary-v0.1.md`
+- 适合：想快速知道“这一轮到底做到哪了、哪些是刻意没做”的人
+- 作用：为当前 private preview 阶段提供一页式阶段总结与 backlog 入口
+
+### 7. Frozen baseline / deep design reference
 - `docs/project-orchestrator-agent-prd-v1.0.1-freeze.md`
 - 适合：需要回看早期冻结设计、规则定义和术语边界的人
 - 作用：作为深层设计基线，不适合作为第一次阅读入口

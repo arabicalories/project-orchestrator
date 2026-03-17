@@ -111,9 +111,10 @@ If you want the fastest orientation path, start here:
 
 1. `docs/project-orchestrator-docs-index-v0.1.md`
 2. `docs/project-orchestrator-reviewer-quickstart-v0.1.md`
-3. `docs/project-orchestrator-implementation-status-v0.1.md`
-4. `project-orchestrator/component-manifest.json`
-5. `project-orchestrator/projects/pa-sample/project.json`
+3. `docs/project-orchestrator-milestone-summary-v0.1.md`
+4. `docs/project-orchestrator-implementation-status-v0.1.md`
+5. `project-orchestrator/component-manifest.json`
+6. `project-orchestrator/projects/pa-sample/project.json`
 
 ## Quickstart for reviewers
 
