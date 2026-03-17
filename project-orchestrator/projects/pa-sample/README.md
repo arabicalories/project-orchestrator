@@ -24,3 +24,21 @@
 
 ## 说明
 如果要接入真实项目，应在本地环境中基于此结构创建 **local-private 实例**，并使用真实覆盖配置替换占位值，而不是直接修改本示例文件承载生产配置。
+
+
+## Runtime contract (private-preview baseline)
+
+This sample does not assume the author machine paths are universal. Runtime scripts should prefer env/config inputs before falling back to private-preview defaults.
+
+Current contract surface:
+
+- `PROJECT_ORCHESTRATOR_WORKSPACE_ROOT`
+- `PROJECT_ORCHESTRATOR_REGISTRY_PATH`
+- `PROJECT_ORCHESTRATOR_CODEX_ENV_DIR`
+- `PROJECT_ORCHESTRATOR_CODEX_LAUNCHER_BIN`
+- `PROJECT_ORCHESTRATOR_CODEX_BIN`
+- `PROJECT_ORCHESTRATOR_HOME`
+- `PROJECT_ORCHESTRATOR_GH_CONFIG_DIR`
+- `PROJECT_ORCHESTRATOR_RUNTIME_MODE`
+
+In a real environment, `codexEnvFile` and other local-private overrides should provide the concrete runtime paths.

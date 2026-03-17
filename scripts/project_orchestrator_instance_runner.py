@@ -12,8 +12,9 @@ import project_orchestrator_agent as runner
 import project_orchestrator_task_tools as tools
 import project_orchestrator_watcher as watcher
 
-ROOT = Path('/root/.openclaw/workspace-coordinator')
-REGISTRY_PATH = ROOT / 'project-orchestrator' / 'registry' / 'projects.json'
+DEFAULT_ROOT = Path(os.environ.get('PROJECT_ORCHESTRATOR_WORKSPACE_ROOT', '/root/.openclaw/workspace-coordinator'))
+ROOT = DEFAULT_ROOT
+REGISTRY_PATH = Path(os.environ.get('PROJECT_ORCHESTRATOR_REGISTRY_PATH', str(ROOT / 'project-orchestrator' / 'registry' / 'projects.json')))
 
 
 def load_registry(path: Path | None = None) -> dict[str, Any]:
@@ -39,7 +40,7 @@ def load_project_config(entry: dict[str, Any]) -> dict[str, Any]:
 def inspect_instance(*, agent_id: str | None = None, project_id: str | None = None) -> dict[str, Any]:
     entry = get_registry_entry(agent_id=agent_id, project_id=project_id)
     config = load_project_config(entry)
-    tmux_info = json.loads(json.dumps(runner.executor.read_project_env(config['projectSlug'])))
+    tmux_info = json.loads(json.dumps(runner.executor.read_project_env(config['projectSlug'], env_file=config.get('codexEnvFile'))))
     tmux_info['tmux_session_exists'] = runner.executor.tmux_session_exists(config['tmuxSession'])
     tmux_info['real_executor_allowed'] = bool(config.get('allowAutoStartExecutor'))
     return {
@@ -175,6 +176,7 @@ def submit_real_task(*, agent_id: str | None = None, project_id: str | None = No
         project_id=project_id_value,
         task_id=task['taskId'],
         project_slug=config['projectSlug'],
+        env_file=config.get('codexEnvFile'),
         prompt=prompt,
         reset_context=False,
         session_name=session_name,
@@ -195,12 +197,12 @@ def submit_real_task(*, agent_id: str | None = None, project_id: str | None = No
 def collect_real_task(*, agent_id: str | None = None, project_id: str | None = None, task_id: str) -> dict[str, Any]:
     entry, config = _resolve_instance(agent_id, project_id)
     project_id_value = config['projectId']
-    session = runner.executor.sync_tmux_run_record(project_id=project_id_value, task_id=task_id, project_slug=config['projectSlug'])
+    session = runner.executor.sync_tmux_run_record(project_id=project_id_value, task_id=task_id, project_slug=config['projectSlug'], env_file=config.get('codexEnvFile'))
     task = tools.task_get(projectId=project_id_value, taskId=task_id)['task']
     watcher_stop = None
     if task['artifacts']['codexRunRecord'] and task['stage'] == 'codex_run':
         tools.task_transition(projectId=project_id_value, taskId=task_id, targetStage='collect', reason='run record recovered from tmux snapshot')
-        runner.executor.collect_tmux_outputs(project_id=project_id_value, task_id=task_id, project_slug=config['projectSlug'])
+        runner.executor.collect_tmux_outputs(project_id=project_id_value, task_id=task_id, project_slug=config['projectSlug'], env_file=config.get('codexEnvFile'))
         task = tools.task_get(projectId=project_id_value, taskId=task_id)['task']
     if task['stage'] in {'done', 'blocked', 'failed'}:
         watcher_stop = watcher.watcher_stop(agent_id=config['agentId'], reason=f'collect-real-task reached stage={task["stage"]}')

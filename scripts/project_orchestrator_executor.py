@@ -11,10 +11,29 @@ from typing import Any
 
 import project_orchestrator_task_tools as tools
 
-WORKSPACE_ROOT = Path('/root/.openclaw/workspace-coordinator')
-CODEX_ENV_DIR = Path('/etc/openclaw/codex')
-CODEX_WORKER_BIN = Path('/usr/local/bin/codex-worker-run')
-CODEX_BIN = 'codex'
+DEFAULT_RUNTIME_CONFIG = {
+    'workspace_root': '/root/.openclaw/workspace-coordinator',
+    'codex_env_dir': '/etc/openclaw/codex',
+    'codex_worker_bin': '/usr/local/bin/codex-worker-run',
+    'codex_launcher_bin': '/usr/local/bin/codex-launcher',
+    'codex_bin': 'codex',
+    'home_override': '/root',
+    'gh_config_dir_override': '/root/.config/gh',
+    'runtime_mode': 'private-preview',
+}
+
+
+def get_runtime_config() -> dict[str, str]:
+    return {
+        'workspace_root': os.environ.get('PROJECT_ORCHESTRATOR_WORKSPACE_ROOT', DEFAULT_RUNTIME_CONFIG['workspace_root']),
+        'codex_env_dir': os.environ.get('PROJECT_ORCHESTRATOR_CODEX_ENV_DIR', DEFAULT_RUNTIME_CONFIG['codex_env_dir']),
+        'codex_worker_bin': os.environ.get('PROJECT_ORCHESTRATOR_CODEX_WORKER_BIN', DEFAULT_RUNTIME_CONFIG['codex_worker_bin']),
+        'codex_launcher_bin': os.environ.get('PROJECT_ORCHESTRATOR_CODEX_LAUNCHER_BIN', DEFAULT_RUNTIME_CONFIG['codex_launcher_bin']),
+        'codex_bin': os.environ.get('PROJECT_ORCHESTRATOR_CODEX_BIN', DEFAULT_RUNTIME_CONFIG['codex_bin']),
+        'home_override': os.environ.get('PROJECT_ORCHESTRATOR_HOME', DEFAULT_RUNTIME_CONFIG['home_override']),
+        'gh_config_dir_override': os.environ.get('PROJECT_ORCHESTRATOR_GH_CONFIG_DIR', DEFAULT_RUNTIME_CONFIG['gh_config_dir_override']),
+        'runtime_mode': os.environ.get('PROJECT_ORCHESTRATOR_RUNTIME_MODE', DEFAULT_RUNTIME_CONFIG['runtime_mode']),
+    }
 
 
 class ExecutorError(RuntimeError):
@@ -25,8 +44,9 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z')
 
 
-def read_project_env(project_slug: str) -> dict[str, str]:
-    env_file = CODEX_ENV_DIR / f'{project_slug}.env'
+def read_project_env(project_slug: str, env_file: str | Path | None = None) -> dict[str, str]:
+    runtime = get_runtime_config()
+    env_file = Path(env_file) if env_file else Path(runtime['codex_env_dir']) / f'{project_slug}.env'
     if not env_file.exists():
         raise ExecutorError(f'project env not found: {env_file}')
     values: dict[str, str] = {}
@@ -157,8 +177,8 @@ def _tmux_run_record(*, project_slug: str, task_id: str, env: dict[str, str], st
     return record
 
 
-def start_tmux_run(*, project_id: str, task_id: str, project_slug: str, session_name: str | None = None, log_path: str | None = None, clean_start: bool = False) -> dict[str, Any]:
-    env = read_project_env(project_slug)
+def start_tmux_run(*, project_id: str, task_id: str, project_slug: str, session_name: str | None = None, log_path: str | None = None, clean_start: bool = False, env_file: str | Path | None = None) -> dict[str, Any]:
+    env = read_project_env(project_slug, env_file=env_file)
     session_name = session_name or env.get('TMUX_SESSION', f'codex_{project_slug}')
     log_path = log_path or env.get('CODEX_LOG') or str(Path(env.get('LOG_DIR', f'/var/log/openclaw-codex/{project_slug}')) / f'{task_id}.log')
     if not tmux_session_exists(session_name):
@@ -167,12 +187,17 @@ def start_tmux_run(*, project_id: str, task_id: str, project_slug: str, session_
             model = env.get('CODEX_MODEL', 'gpt-5.4')
             reasoning = env.get('CODEX_REASONING', 'high')
             full_access = env.get('CODEX_FULL_ACCESS', 'true') == 'true'
-            cmd = f"cd {workdir} && HOME=/root GH_CONFIG_DIR=/root/.config/gh {CODEX_BIN} --no-alt-screen -m {model} -c model_reasoning_effort=\"{reasoning}\""
+            runtime = get_runtime_config()
+            home_override = env.get('HOME_OVERRIDE') or runtime['home_override']
+            gh_config_dir = env.get('GH_CONFIG_DIR_OVERRIDE') or runtime['gh_config_dir_override']
+            codex_bin = env.get('CODEX_BIN') or runtime['codex_bin']
+            cmd = f"cd {workdir} && HOME={home_override} GH_CONFIG_DIR={gh_config_dir} {codex_bin} --no-alt-screen -m {model} -c model_reasoning_effort=\"{reasoning}\""
             if full_access:
                 cmd += ' --dangerously-bypass-approvals-and-sandbox'
             subprocess.run(['tmux', 'new-session', '-d', '-s', session_name, cmd], check=True)
         else:
-            subprocess.run(['tmux', 'new-session', '-d', '-s', session_name, f"/usr/local/bin/codex-launcher '{project_slug}'"], check=True)
+            launcher_bin = get_runtime_config()['codex_launcher_bin']
+            subprocess.run(['tmux', 'new-session', '-d', '-s', session_name, f"{launcher_bin} '{project_slug}'"], check=True)
         subprocess.run(['tmux', 'pipe-pane', '-t', f'{session_name}:0.0', '-o', f"cat >> '{log_path}'"], check=True)
     status = 'running' if tmux_session_exists(session_name) else 'failed'
     snapshot = parse_codex_snapshot(capture_tmux_pane(session_name)) if status == 'running' else None
@@ -183,11 +208,11 @@ def start_tmux_run(*, project_id: str, task_id: str, project_slug: str, session_
     return session
 
 
-def submit_tmux_prompt(*, project_id: str, task_id: str, project_slug: str, prompt: str, reset_context: bool = False, session_name: str | None = None, log_path: str | None = None, clean_start: bool = False) -> dict[str, Any]:
-    env = read_project_env(project_slug)
+def submit_tmux_prompt(*, project_id: str, task_id: str, project_slug: str, prompt: str, reset_context: bool = False, session_name: str | None = None, log_path: str | None = None, clean_start: bool = False, env_file: str | Path | None = None) -> dict[str, Any]:
+    env = read_project_env(project_slug, env_file=env_file)
     session_name = session_name or env.get('TMUX_SESSION', f'codex_{project_slug}')
     if not tmux_session_exists(session_name):
-        start_tmux_run(project_id=project_id, task_id=task_id, project_slug=project_slug, session_name=session_name, log_path=log_path, clean_start=clean_start)
+        start_tmux_run(project_id=project_id, task_id=task_id, project_slug=project_slug, session_name=session_name, log_path=log_path, clean_start=clean_start, env_file=env_file)
     wait_for_codex_prompt(session_name)
     if reset_context:
         reset_tmux_context(session_name)
@@ -204,11 +229,11 @@ def submit_tmux_prompt(*, project_id: str, task_id: str, project_slug: str, prom
     return session
 
 
-def sync_tmux_run_record(*, project_id: str, task_id: str, project_slug: str) -> dict[str, Any]:
+def sync_tmux_run_record(*, project_id: str, task_id: str, project_slug: str, env_file: str | Path | None = None) -> dict[str, Any]:
     task = tools.task_get(projectId=project_id, taskId=task_id)['task']
     session = task.get('codexSession')
     if not session:
-        session = start_tmux_run(project_id=project_id, task_id=task_id, project_slug=project_slug)
+        session = start_tmux_run(project_id=project_id, task_id=task_id, project_slug=project_slug, env_file=env_file)
     session_name = session['sessionId']
     is_running = tmux_session_exists(session_name)
     snapshot_raw = capture_tmux_pane(session_name) if is_running else ''
@@ -231,9 +256,9 @@ def sync_tmux_run_record(*, project_id: str, task_id: str, project_slug: str) ->
     return session
 
 
-def collect_tmux_outputs(*, project_id: str, task_id: str, project_slug: str) -> dict[str, Any]:
+def collect_tmux_outputs(*, project_id: str, task_id: str, project_slug: str, env_file: str | Path | None = None) -> dict[str, Any]:
     task = tools.task_get(projectId=project_id, taskId=task_id)['task']
-    env = read_project_env(project_slug)
+    env = read_project_env(project_slug, env_file=env_file)
     session = task.get('codexSession') or {}
     snapshot_tail = session.get('snapshotTail') or ''
     token_usage = session.get('tokenUsageLine') or 'token-usage-unavailable'

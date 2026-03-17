@@ -73,7 +73,7 @@ def run_until_pause_or_done(*, project_id: str, task_id: str, executor_mode: str
 
 
 def cmd_inspect_tmux(args: argparse.Namespace) -> None:
-    payload = executor.read_project_env(args.project_slug)
+    payload = executor.read_project_env(args.project_slug, env_file=args.env_file)
     payload['tmux_session_exists'] = executor.tmux_session_exists(payload.get('TMUX_SESSION', f'codex_{args.project_slug}'))
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
@@ -84,6 +84,7 @@ def main() -> None:
 
     inspect = sub.add_parser('inspect-tmux')
     inspect.add_argument('--project-slug', required=True)
+    inspect.add_argument('--env-file')
     inspect.set_defaults(func=cmd_inspect_tmux)
 
     args = parser.parse_args()

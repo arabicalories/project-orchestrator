@@ -70,6 +70,17 @@ class ProjectOrchestratorInstanceRunnerTests(unittest.TestCase):
         self.assertEqual(result['project']['agentId'], 'pa-sample')
         self.assertTrue(result['tmux']['tmux_session_exists'])
 
+    def test_inspect_instance_prefers_project_codex_env_file(self) -> None:
+        env_path = self.root / 'sample.env'
+        project_path = self.workspace / 'project.json'
+        project = json.loads(project_path.read_text(encoding='utf-8'))
+        project['codexEnvFile'] = str(env_path)
+        project_path.write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding='utf-8')
+        with mock.patch.object(inst.runner.executor, 'read_project_env', return_value={'TMUX_SESSION': 'codex_sample'}) as mocked_read, \
+             mock.patch.object(inst.runner.executor, 'tmux_session_exists', return_value=True):
+            inst.inspect_instance(agent_id='pa-sample')
+        self.assertEqual(mocked_read.call_args.kwargs['env_file'], str(env_path))
+
     def test_tmux_flow_is_guarded_by_default(self) -> None:
         result = inst.run_agent_demo(agent_id='pa-sample', mode='tmux-flow')
         self.assertFalse(result['success'])
@@ -254,6 +265,31 @@ class ProjectOrchestratorInstanceRunnerTests(unittest.TestCase):
         self.assertFalse(result['success'])
         self.assertEqual(result['error'], 'WAITING_USER_DECISION')
         self.assertEqual(result['task']['stage'], 'await_user_decision')
+
+
+class ProjectOrchestratorRuntimeContractTests(unittest.TestCase):
+    def test_read_project_env_accepts_explicit_env_file(self) -> None:
+        import project_orchestrator_executor as ex
+        with tempfile.TemporaryDirectory() as tmp:
+            env_file = Path(tmp) / 'sample.env'
+            env_file.write_text('TMUX_SESSION=codex_sample\nWORKDIR=/tmp/sample\n', encoding='utf-8')
+            values = ex.read_project_env('ignored-slug', env_file=env_file)
+        self.assertEqual(values['TMUX_SESSION'], 'codex_sample')
+        self.assertEqual(values['WORKDIR'], '/tmp/sample')
+
+    def test_get_runtime_config_prefers_env_over_defaults(self) -> None:
+        import project_orchestrator_executor as ex
+        with mock.patch.dict('os.environ', {
+            'PROJECT_ORCHESTRATOR_WORKSPACE_ROOT': '/tmp/workspace',
+            'PROJECT_ORCHESTRATOR_CODEX_ENV_DIR': '/tmp/codex-env',
+            'PROJECT_ORCHESTRATOR_CODEX_BIN': 'codex-custom',
+            'PROJECT_ORCHESTRATOR_RUNTIME_MODE': 'sample-contract',
+        }, clear=False):
+            cfg = ex.get_runtime_config()
+        self.assertEqual(cfg['workspace_root'], '/tmp/workspace')
+        self.assertEqual(cfg['codex_env_dir'], '/tmp/codex-env')
+        self.assertEqual(cfg['codex_bin'], 'codex-custom')
+        self.assertEqual(cfg['runtime_mode'], 'sample-contract')
 
 
 class ProjectOrchestratorExecutorSnapshotTests(unittest.TestCase):
