@@ -107,15 +107,13 @@ If you are reading this repo as a collaborator, the right expectation is:
 
 ## Recommended reading order
 
-If you want the fastest orientation path, read these first:
+If you want the fastest orientation path, start here:
 
-1. `docs/project-orchestrator-implementation-status-v0.1.md`
-2. `docs/project-orchestrator-github-packaging-plan-v0.1.md`
-3. `docs/project-orchestrator-update-workflow-sop-v0.1.md`
-4. `docs/project-orchestrator-public-ready-gap-review-v0.1.md`
-5. `docs/project-orchestrator-reviewer-quickstart-v0.1.md`
-6. `project-orchestrator/component-manifest.json`
-7. `project-orchestrator/projects/pa-sample/project.json`
+1. `docs/project-orchestrator-docs-index-v0.1.md`
+2. `docs/project-orchestrator-reviewer-quickstart-v0.1.md`
+3. `docs/project-orchestrator-implementation-status-v0.1.md`
+4. `project-orchestrator/component-manifest.json`
+5. `project-orchestrator/projects/pa-sample/project.json`
 
 ## Quickstart for reviewers
 

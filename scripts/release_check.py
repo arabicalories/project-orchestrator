@@ -17,6 +17,7 @@ REQUIRED_PATHS = [
     Path("docs/project-orchestrator-update-workflow-sop-v0.1.md"),
     Path("docs/project-orchestrator-public-ready-gap-review-v0.1.md"),
     Path("docs/project-orchestrator-reviewer-quickstart-v0.1.md"),
+    Path("docs/project-orchestrator-docs-index-v0.1.md"),
     Path("project-orchestrator/projects/pa-sample/project.json"),
     Path("project-orchestrator/registry/projects.sample.json"),
 ]
