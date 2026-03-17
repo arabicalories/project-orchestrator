@@ -1,6 +1,8 @@
 # Project Orchestrator Update Workflow SOP v0.1
 
-目标仓库：`git@github.com:arabicalories/project-orchestrator.git`
+目标仓库：`https://github.com/arabicalories/project-orchestrator.git`
+
+> 当前这台机器的稳定推送方式默认按 HTTPS 处理；若本地 `origin` 仍是 SSH，先切到 HTTPS 再 push。
 
 本文档用途：定义 `project-orchestrator` 后续修改与更新的标准工作流，确保：
 - 不影响当前 local-private 真实实例的使用；
@@ -261,7 +263,29 @@ staging 目录默认不做：
 
 ---
 
-## 10. 当前结论
+## 10. 速用版（平时就按这个跑）
+
+如果你只是想快速更新仓库，不想每次重读整篇 SOP，默认按下面 8 步执行：
+
+1. 在 workspace 完成真实修改与验证；
+2. 先判断这次是不是 A / B 类改动；若只是 local-private 或运行态改动，就不发 GitHub；
+3. 把需要发布的内容同步到 staging；
+4. 确认 sample 面仍然是 `pa-sample`，不要把 local-private 实例带进去；
+5. 跑测试；
+6. grep 一轮真实路径 / 真实群 / 真实 open_id / 真实实例名等高风险串；
+7. 确认 `.gitignore` 与 `.ignore` 都已覆盖本次新增边界；
+8. 在 staging 提交并 push：
+
+```bash
+cd /root/projects/staging/project-orchestrator-private
+
+git status --short
+git add .
+git commit -m "<type>: <summary>"
+HOME=/root GH_CONFIG_DIR=/root/.config/gh git push origin main
+```
+
+## 11. 当前结论
 
 后续修改和更新的默认方式不是“直接在 GitHub 仓库里边想边改”，而是：
 
