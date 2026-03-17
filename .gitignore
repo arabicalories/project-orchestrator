@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# Logs / runtime artifacts
+runtime/
+*.log
+*.jsonl
+
+# Local-only real instance
+project-orchestrator/projects/local-private/
+project-orchestrator/registry/projects.json
+
+# Workspace-only content
+memory/
+msg-recover/
+progress-notify/
+reports/
+tmp/
+
+# Env / secrets
+.env
+.env.*

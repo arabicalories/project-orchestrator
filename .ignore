@@ -1,0 +1,25 @@
+# Python/cache
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# Runtime / generated files
+runtime/
+*.log
+*.jsonl
+
+# Real local instance and local registry
+project-orchestrator/projects/local-private/
+project-orchestrator/registry/projects.json
+
+# Workspace-private areas
+memory/
+msg-recover/
+progress-notify/
+reports/
+tmp/
+
+# Env / secrets
+.env
+.env.*

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "projectId": "sample-project",
+      "agentId": "pa-sample",
+      "workspacePath": "project-orchestrator/projects/pa-sample",
+      "runner": "scripts/project_orchestrator_agent.py",
+      "projectSlug": "sample",
+      "repoPath": "/path/to/sample-repo",
+      "tmuxSession": "codex_sample",
+      "status": "sample-prototype"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "intake": ["plan", "blocked", "failed"],
+  "plan": ["await_user_approval", "codex_run", "blocked", "failed"],
+  "await_user_approval": ["codex_run", "blocked", "failed"],
+  "codex_run": ["collect", "blocked", "failed"],
+  "collect": ["review", "blocked", "failed"],
+  "review": ["fixback", "await_user_decision", "pr_ready", "failed"],
+  "await_user_decision": ["fixback", "pr_ready", "done", "failed"],
+  "fixback": ["codex_run", "blocked", "failed"],
+  "pr_ready": ["done", "failed"],
+  "blocked": ["plan", "await_user_approval", "codex_run", "failed"],
+  "failed": [],
+  "done": []
+}

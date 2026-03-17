@@ -1,0 +1,31 @@
+{
+  "projectId": "sample-project",
+  "agentId": "pa-sample",
+  "workspaceLabel": "project-sample",
+  "workspacePath": "project-orchestrator/projects/pa-sample",
+  "runner": "scripts/project_orchestrator_agent.py",
+  "runnerMode": "prototype",
+  "projectSlug": "sample",
+  "repoPath": "/path/to/sample-repo",
+  "repoId": "repo-sample",
+  "tmuxSession": "codex_sample",
+  "tmuxIsolationMode": "per-task-session",
+  "codexEnvFile": "/path/to/sample.env",
+  "defaultExecutorMode": "tmux",
+  "defaultReviewOutcome": "pass",
+  "messageChannel": "feishu",
+  "messageTarget": "chat:oc_sample",
+  "projectChatId": "oc_sample",
+  "defaultReplyTarget": "user:ou_sample",
+  "defaultReplyOpenId": "ou_sample",
+  "resetSessionBeforeSubmit": true,
+  "allowAutoStartExecutor": false,
+  "allowCron": false,
+  "allowReviewCard": false,
+  "allowAutoPR": false,
+  "notes": [
+    "Sample instance for GitHub private preview repo.",
+    "All values in this file are placeholders and must be replaced by local-private overrides in a real environment.",
+    "This sample is for structure/reference only and is not required to run a real task flow out of the box."
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "MYSAAS-002",
+  "projectId": "my-saas",
+  "repoId": "repo-main",
+  "title": "修复上传组件边界条件 bug",
+  "goal": "修复上传组件在空文件、超大文件和重复点击下的边界条件问题",
+  "constraints": [
+    "必须通过 Codex worker 执行代码修改",
+    "review 未通过时必须走 fixback"
+  ],
+  "stage": "intake",
+  "needsUserDecision": false,
+  "userDecisionKind": null,
+  "userDecisionReason": "",
+  "blockedReasonKind": null,
+  "deliveryClosure": null,
+  "codexSession": null,
+  "repoRef": {
+    "repoPath": "/repos/my-saas",
+    "branch": "feature/MYSAAS-002",
+    "worktree": null
+  },
+  "artifacts": {
+    "plan": null,
+    "codexRunRecord": null,
+    "codexSummary": null,
+    "review": null,
+    "testResult": null
+  },
+  "acceptanceChecks": [
+    "review 给出明确结论",
+    "返工后能够再次进入 review"
+  ],
+  "history": [],
+  "createdAt": "2026-03-16T00:00:00Z",
+  "updatedAt": "2026-03-16T00:00:00Z"
+}

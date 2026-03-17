@@ -1,0 +1,12 @@
+{
+  "projectId": "my-saas",
+  "overrides": {
+    "plan": {
+      "default": {
+        "kind": "transition",
+        "targetStage": "await_user_approval",
+        "reason": "project override: all plan outputs require approval first"
+      }
+    }
+  }
+}

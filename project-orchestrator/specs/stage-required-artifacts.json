@@ -1,0 +1,14 @@
+{
+  "intake": [],
+  "plan": [],
+  "await_user_approval": ["plan"],
+  "codex_run": ["plan"],
+  "collect": ["codexRunRecord"],
+  "review": ["codexRunRecord", "codexSummary"],
+  "await_user_decision": ["review"],
+  "fixback": ["review"],
+  "pr_ready": ["review"],
+  "done": ["review"],
+  "blocked": [],
+  "failed": []
+}

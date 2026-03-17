@@ -1,0 +1,44 @@
+{
+  "scenarioId": "sample-b-review-fixback",
+  "title": "样例 B：review 打回流",
+  "flow": [
+    "intake",
+    "plan",
+    "codex_run",
+    "collect",
+    "review",
+    "fixback",
+    "codex_run",
+    "collect",
+    "review",
+    "await_user_decision",
+    "pr_ready",
+    "done"
+  ],
+  "checkpoints": [
+    {
+      "currentStage": "review",
+      "legalTargetStages": ["fixback", "await_user_decision", "pr_ready"],
+      "requiredArtifactsBeforeEnter": ["codexRunRecord", "codexSummary"],
+      "expectedMissingArtifacts": ["codexRunRecord", "codexSummary"]
+    },
+    {
+      "currentStage": "fixback",
+      "legalTargetStages": ["codex_run"],
+      "requiredArtifactsBeforeEnter": ["review"],
+      "expectedMissingArtifacts": ["review"]
+    },
+    {
+      "currentStage": "await_user_decision",
+      "legalTargetStages": ["fixback", "pr_ready", "done"],
+      "requiredArtifactsBeforeEnter": ["review"],
+      "expectedMissingArtifacts": ["review"]
+    },
+    {
+      "currentStage": "pr_ready",
+      "legalTargetStages": ["done"],
+      "requiredArtifactsBeforeEnter": ["review"],
+      "expectedMissingArtifacts": ["review"]
+    }
+  ]
+}

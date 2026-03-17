@@ -1,0 +1,58 @@
+{
+  "scenarioId": "sample-a-normal-flow",
+  "title": "样例 A：正常流",
+  "flow": [
+    "intake",
+    "plan",
+    "await_user_approval",
+    "codex_run",
+    "collect",
+    "review",
+    "pr_ready",
+    "done"
+  ],
+  "checkpoints": [
+    {
+      "currentStage": "intake",
+      "legalTargetStages": ["plan"],
+      "requiredArtifactsBeforeEnter": [],
+      "expectedMissingArtifacts": []
+    },
+    {
+      "currentStage": "plan",
+      "legalTargetStages": ["await_user_approval", "codex_run"],
+      "requiredArtifactsBeforeEnter": [],
+      "expectedMissingArtifacts": []
+    },
+    {
+      "currentStage": "await_user_approval",
+      "legalTargetStages": ["codex_run"],
+      "requiredArtifactsBeforeEnter": ["plan"],
+      "expectedMissingArtifacts": []
+    },
+    {
+      "currentStage": "codex_run",
+      "legalTargetStages": ["collect"],
+      "requiredArtifactsBeforeEnter": ["plan"],
+      "expectedMissingArtifacts": []
+    },
+    {
+      "currentStage": "collect",
+      "legalTargetStages": ["review"],
+      "requiredArtifactsBeforeEnter": ["codexRunRecord"],
+      "expectedMissingArtifacts": ["codexRunRecord"]
+    },
+    {
+      "currentStage": "review",
+      "legalTargetStages": ["pr_ready"],
+      "requiredArtifactsBeforeEnter": ["codexRunRecord", "codexSummary"],
+      "expectedMissingArtifacts": ["codexRunRecord", "codexSummary"]
+    },
+    {
+      "currentStage": "pr_ready",
+      "legalTargetStages": ["done"],
+      "requiredArtifactsBeforeEnter": ["review"],
+      "expectedMissingArtifacts": ["review"]
+    }
+  ]
+}

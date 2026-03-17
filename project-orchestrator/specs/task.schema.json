@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/project-orchestrator/task.schema.json",
+  "title": "Project Orchestrator Task",
+  "type": "object",
+  "required": [
+    "id",
+    "projectId",
+    "repoId",
+    "title",
+    "goal",
+    "constraints",
+    "stage",
+    "needsUserDecision",
+    "userDecisionKind",
+    "userDecisionReason",
+    "blockedReasonKind",
+    "deliveryClosure",
+    "codexSession",
+    "repoRef",
+    "artifacts",
+    "acceptanceChecks",
+    "history",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "projectId": {"type": "string", "minLength": 1},
+    "repoId": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "goal": {"type": "string", "minLength": 1},
+    "constraints": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "intake",
+        "plan",
+        "await_user_approval",
+        "codex_run",
+        "collect",
+        "review",
+        "await_user_decision",
+        "fixback",
+        "pr_ready",
+        "done",
+        "blocked",
+        "failed"
+      ]
+    },
+    "needsUserDecision": {"type": "boolean"},
+    "userDecisionKind": {
+      "type": ["string", "null"],
+      "enum": ["approval", "result-decision", "direction-choice", "other", null]
+    },
+    "userDecisionReason": {"type": "string"},
+    "blockedReasonKind": {
+      "type": ["string", "null"],
+      "enum": ["dependency", "missing-info", "external-error", "manual-hold", "other", null]
+    },
+    "deliveryClosure": {
+      "type": ["object", "null"],
+      "required": ["kind", "detail", "closedAt"],
+      "properties": {
+        "kind": {"type": "string", "enum": ["user-accepted", "pr-created", "merged", "manual-close", "other"]},
+        "detail": {"type": "string"},
+        "closedAt": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "codexSession": {
+      "type": ["object", "null"],
+      "properties": {
+        "executor": {"type": "string"},
+        "sessionId": {"type": "string"},
+        "status": {"type": "string"},
+        "startedAt": {"type": "string"},
+        "endedAt": {"type": ["string", "null"]},
+        "logPath": {"type": ["string", "null"]},
+        "summaryPath": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "repoRef": {
+      "type": "object",
+      "required": ["repoPath", "branch", "worktree"],
+      "properties": {
+        "repoPath": {"type": "string", "minLength": 1},
+        "branch": {"type": "string", "minLength": 1},
+        "worktree": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["plan", "codexRunRecord", "codexSummary", "review", "testResult"],
+      "properties": {
+        "plan": {"$ref": "#/$defs/artifactRefOrNull"},
+        "codexRunRecord": {"$ref": "#/$defs/artifactRefOrNull"},
+        "codexSummary": {"$ref": "#/$defs/artifactRefOrNull"},
+        "review": {"$ref": "#/$defs/artifactRefOrNull"},
+        "testResult": {"$ref": "#/$defs/artifactRefOrNull"}
+      },
+      "additionalProperties": false
+    },
+    "acceptanceChecks": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "history": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/historyEntry"}
+    },
+    "createdAt": {"type": "string", "minLength": 1},
+    "updatedAt": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "artifactRef": {
+      "type": "object",
+      "required": ["type", "path", "summary", "updatedAt"],
+      "properties": {
+        "type": {"type": "string"},
+        "path": {"type": "string"},
+        "summary": {"type": "string"},
+        "updatedAt": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "artifactRefOrNull": {
+      "anyOf": [
+        {"$ref": "#/$defs/artifactRef"},
+        {"type": "null"}
+      ]
+    },
+    "historyEntry": {
+      "type": "object",
+      "required": ["timestamp", "actor", "action", "fromStage", "toStage", "reason", "changedFieldsSummary"],
+      "properties": {
+        "timestamp": {"type": "string", "minLength": 1},
+        "actor": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "minLength": 1},
+        "fromStage": {"type": ["string", "null"]},
+        "toStage": {"type": ["string", "null"]},
+        "reason": {"type": "string"},
+        "changedFieldsSummary": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

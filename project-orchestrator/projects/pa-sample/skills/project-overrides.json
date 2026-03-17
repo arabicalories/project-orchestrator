@@ -1,0 +1,12 @@
+{
+  "projectId": "sample-project",
+  "overrides": {
+    "pr_ready": {
+      "default": {
+        "kind": "transition",
+        "targetStage": "done",
+        "reason": "sample override: keep delivery closure minimal in the example instance; real PR delivery should be defined by runtime/local-private configuration"
+      }
+    }
+  }
+}

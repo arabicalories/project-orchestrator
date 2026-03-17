@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-03-16T00:00:00Z",
+  "actor": "tool:task_transition",
+  "action": "transition",
+  "fromStage": "collect",
+  "toStage": "review",
+  "reason": "codex summary ready",
+  "changedFieldsSummary": ["stage", "updatedAt"]
+}

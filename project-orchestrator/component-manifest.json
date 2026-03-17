@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "baseline": "docs/project-orchestrator-agent-prd-v1.0.1-freeze.md",
+  "statusDoc": "docs/project-orchestrator-implementation-status-v0.1.md",
+  "components": [
+    {
+      "name": "specs",
+      "path": "project-orchestrator/specs",
+      "layer": "rules",
+      "status": "formal-prototype",
+      "purpose": "冻结规则表与 schema"
+    },
+    {
+      "name": "shared-skill-policy",
+      "path": "project-orchestrator/shared-skills/project-orchestrator-dev/stage-actions.json",
+      "layer": "rules",
+      "status": "formal-prototype",
+      "purpose": "共享阶段动作策略"
+    },
+    {
+      "name": "workspace-template",
+      "path": "project-orchestrator/workspace-template",
+      "layer": "template",
+      "status": "formal-prototype",
+      "purpose": "项目 agent workspace 模板"
+    },
+    {
+      "name": "task-tools",
+      "path": "scripts/project_orchestrator_task_tools.py",
+      "layer": "runtime",
+      "status": "formal-prototype",
+      "purpose": "任务状态创建、读取、检查、推进与用户决策写口"
+    },
+    {
+      "name": "executor-adapter",
+      "path": "scripts/project_orchestrator_executor.py",
+      "layer": "runtime",
+      "status": "formal-prototype",
+      "purpose": "fake/tmux 执行器适配层"
+    },
+    {
+      "name": "unified-runner-shell",
+      "path": "scripts/project_orchestrator_agent.py",
+      "layer": "runtime",
+      "status": "formal-prototype",
+      "purpose": "统一 orchestrator shell / dispatch 入口；已注册项目委派给项目 agent"
+    },
+    {
+      "name": "instance-runner",
+      "path": "scripts/project_orchestrator_instance_runner.py",
+      "layer": "runtime",
+      "status": "formal-prototype",
+      "purpose": "项目 agent 统一推进器；当前已承载已注册项目的真流程推进"
+    },
+    {
+      "name": "review-executor",
+      "path": "scripts/project_orchestrator_review.py",
+      "layer": "runtime",
+      "status": "formal-prototype",
+      "purpose": "review / fixback / 用户介入升级判断执行器"
+    },
+    {
+      "name": "agent-shell-tests",
+      "path": "scripts/test_project_orchestrator_agent_shell.py",
+      "layer": "test",
+      "status": "active-test",
+      "purpose": "验证 shell / dispatch 仅做项目 agent 委派"
+    },
+    {
+      "name": "instance-runner-tests",
+      "path": "scripts/test_project_orchestrator_instance_runner.py",
+      "layer": "test",
+      "status": "active-test",
+      "purpose": "验证项目 agent 主流程推进"
+    },
+    {
+      "name": "review-tests",
+      "path": "scripts/test_project_orchestrator_review.py",
+      "layer": "test",
+      "status": "active-test",
+      "purpose": "验证 review / fixback / 用户介入升级逻辑"
+    }
+  ],
+  "nextTarget": {
+    "name": "pa-sample",
+    "status": "sample-instance-ready",
+    "plannedAfter": "continue hardening sample-first project-agent flow"
+  }
+}
