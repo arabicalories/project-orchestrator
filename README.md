@@ -115,6 +115,31 @@ If you want the fastest orientation path, read these first:
 4. `project-orchestrator/component-manifest.json`
 5. `project-orchestrator/projects/pa-sample/project.json`
 
+## Pre-push release check
+
+Before pushing updates from the staging repository, run:
+
+```bash
+cd /root/projects/staging/project-orchestrator-private
+python scripts/release_check.py
+```
+
+What it checks:
+
+- required sample/docs files still exist
+- `.gitignore` and `.ignore` stay aligned
+- `pa-sample` exists and local-private packaged files do not
+- forbidden real-instance markers are not present
+- phase1 structural check still passes
+- core unit tests still pass
+
+Useful shortcuts:
+
+```bash
+python scripts/release_check.py --skip-tests
+python scripts/release_check.py --skip-phase1
+```
+
 ## Notes for future packaging
 
 This repository is expected to keep changing. The current goal is not “final public release”, but a clean enough private beta surface that can be updated repeatedly without dragging local-private coupling back in.

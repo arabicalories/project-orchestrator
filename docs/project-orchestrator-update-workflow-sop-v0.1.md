@@ -274,11 +274,12 @@ staging 目录默认不做：
 5. 跑测试；
 6. grep 一轮真实路径 / 真实群 / 真实 open_id / 真实实例名等高风险串；
 7. 确认 `.gitignore` 与 `.ignore` 都已覆盖本次新增边界；
-8. 在 staging 提交并 push：
+8. 在 staging 先跑发布前检查，再提交并 push：
 
 ```bash
 cd /root/projects/staging/project-orchestrator-private
 
+python scripts/release_check.py
 git status --short
 git add .
 git commit -m "<type>: <summary>"
