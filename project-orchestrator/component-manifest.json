@@ -61,21 +61,21 @@
     },
     {
       "name": "agent-shell-tests",
-      "path": "scripts/test_project_orchestrator_agent_shell.py",
+      "path": "tests/test_project_orchestrator_agent_shell.py",
       "layer": "test",
       "status": "active-test",
       "purpose": "验证 shell / dispatch 仅做项目 agent 委派"
     },
     {
       "name": "instance-runner-tests",
-      "path": "scripts/test_project_orchestrator_instance_runner.py",
+      "path": "tests/test_project_orchestrator_instance_runner.py",
       "layer": "test",
       "status": "active-test",
       "purpose": "验证项目 agent 主流程推进"
     },
     {
       "name": "review-tests",
-      "path": "scripts/test_project_orchestrator_review.py",
+      "path": "tests/test_project_orchestrator_review.py",
       "layer": "test",
       "status": "active-test",
       "purpose": "验证 review / fixback / 用户介入升级逻辑"

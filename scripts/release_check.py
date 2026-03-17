@@ -15,6 +15,7 @@ REQUIRED_PATHS = [
     Path(".gitignore"),
     Path(".ignore"),
     Path("docs/project-orchestrator-update-workflow-sop-v0.1.md"),
+    Path("docs/project-orchestrator-public-ready-gap-review-v0.1.md"),
     Path("project-orchestrator/projects/pa-sample/project.json"),
     Path("project-orchestrator/registry/projects.sample.json"),
 ]
@@ -181,6 +182,45 @@ def check_forbidden_patterns() -> None:
         raise CheckFailure("forbidden patterns found")
 
 
+def check_component_manifest() -> None:
+    section("component manifest")
+    manifest_path = REPO_ROOT / "project-orchestrator/component-manifest.json"
+    try:
+        import json
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        fail(f"component manifest unreadable: {exc}")
+        raise CheckFailure("component manifest unreadable")
+
+    missing: list[str] = []
+    for rel in [manifest.get("baseline"), manifest.get("statusDoc")]:
+        if not rel:
+            continue
+        path = REPO_ROOT / rel
+        if path.exists():
+            ok(f"manifest path exists: {rel}")
+        else:
+            fail(f"manifest path missing: {rel}")
+            missing.append(rel)
+
+    for comp in manifest.get("components", []):
+        rel = comp.get("path")
+        name = comp.get("name", rel)
+        if not rel:
+            fail(f"component missing path: {name}")
+            missing.append(f"<missing-path:{name}>")
+            continue
+        path = REPO_ROOT / rel
+        if path.exists():
+            ok(f"component exists: {name} -> {rel}")
+        else:
+            fail(f"component missing: {name} -> {rel}")
+            missing.append(rel)
+
+    if missing:
+        raise CheckFailure("component manifest drift detected")
+
+
 def check_phase1() -> None:
     section("phase1 check")
     result = run([sys.executable, "scripts/project_orchestrator_phase1_check.py"])
@@ -234,6 +274,7 @@ def main() -> int:
         check_required_paths()
         check_ignore_parity()
         check_sample_boundary()
+        check_component_manifest()
         check_forbidden_patterns()
         if not args.skip_phase1:
             check_phase1()
