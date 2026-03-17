@@ -16,7 +16,7 @@
 当前阶段默认采用三段式结构：
 
 1. **workspace**：真实开发源
-   - 当前工作区：`/root/.openclaw/workspace-coordinator`
+   - 建议使用统一的 workspace 根目录：`<workspace-root>`
    - 用于真实开发、真实验证、真实实例维护。
 
 2. **staging**：整理区
@@ -24,7 +24,7 @@
    - staging 不是长期真相源，而是每次同步前的整理快照。
 
 3. **GitHub 仓库**：整理后的发布镜像
-   - 目标仓库：`git@github.com:arabicalories/project-orchestrator.git`
+   - 目标仓库：`https://github.com/arabicalories/project-orchestrator.git`
    - 只接收已经裁剪好的 sample / docs / core / runtime / tests 内容。
 
 一句话规则：
@@ -128,6 +128,9 @@
 
 ### Step 3：准备 staging 目录
 建议使用独立目录，例如：
+- `<staging-repo>`
+
+作者本机示例：
 - `/root/projects/staging/project-orchestrator-private/`
 
 在 staging 中：
@@ -277,6 +280,19 @@ staging 目录默认不做：
 8. 在 staging 先跑发布前检查，再提交并 push：
 
 ```bash
+cd <staging-repo>
+
+python scripts/release_check.py
+git status --short
+git add .
+git commit -m "<type>: <summary>"
+HOME=/root GH_CONFIG_DIR=/root/.config/gh git push origin main
+```
+
+作者本机示例：
+
+```bash
+# author-local example
 cd /root/projects/staging/project-orchestrator-private
 
 python scripts/release_check.py
@@ -297,3 +313,14 @@ HOME=/root GH_CONFIG_DIR=/root/.config/gh git push origin main
 - 不把 workspace 脏数据带入 GitHub 仓库；
 - 让 sample / docs / core / runtime 的更新长期保持低摩擦；
 - 为未来正式 plugin 发布保留平滑演进路径。
+
+
+## 12. 路径变量约定
+
+为降低 handoff 摩擦，本文档默认使用以下占位写法：
+
+- `<workspace-root>`：真实开发 workspace 根目录
+- `<staging-repo>`：用于发布整理的 staging 仓库目录
+- `<local-private-instance>`：本地真实实例目录
+
+若需要给出作者机器示例，应明确标注为 `author-local example`，不要把作者本机路径写成模板默认路径。

@@ -113,14 +113,32 @@ If you want the fastest orientation path, read these first:
 2. `docs/project-orchestrator-github-packaging-plan-v0.1.md`
 3. `docs/project-orchestrator-update-workflow-sop-v0.1.md`
 4. `docs/project-orchestrator-public-ready-gap-review-v0.1.md`
-5. `project-orchestrator/component-manifest.json`
-6. `project-orchestrator/projects/pa-sample/project.json`
+5. `docs/project-orchestrator-reviewer-quickstart-v0.1.md`
+6. `project-orchestrator/component-manifest.json`
+7. `project-orchestrator/projects/pa-sample/project.json`
+
+## Quickstart for reviewers
+
+If you are reviewing the repository for the first time, use this path:
+
+1. Read `docs/project-orchestrator-reviewer-quickstart-v0.1.md`
+2. Read `docs/project-orchestrator-implementation-status-v0.1.md`
+3. Inspect `project-orchestrator/projects/pa-sample/project.json`
+4. Run the read-only checks below if you want to verify the packaged state
 
 ## Pre-push release check
 
 Before pushing updates from the staging repository, run:
 
 ```bash
+cd <staging-repo>
+python scripts/release_check.py
+```
+
+Author-local example:
+
+```bash
+# author-local example
 cd /root/projects/staging/project-orchestrator-private
 python scripts/release_check.py
 ```
